@@ -1,8 +1,58 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { Check } from "lucide-react"
+import { useState, useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
+
+function AmenitiesImageSlider() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const images = [
+    { src: "/images/restaurant.webp", alt: "Luxora Villa Restaurant" },
+    { src: "/images/infinity_pool.webp", alt: "Infinity Pool" },
+    { src: "/images/wineceller.webp", alt: "Wine Cellar" },
+    { src: "/images/tenniscourt.webp", alt: "Tennis Court" },
+    { src: "/images/garden.webp", alt: "Organic Garden" },
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [images.length])
+
+  return (
+    <div className="relative h-[400px] w-full rounded-lg overflow-hidden">
+      {images.map((image, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 transition-transform duration-1000 ease-in-out ${
+            index === currentImageIndex
+              ? "translate-x-0 opacity-100"
+              : index === (currentImageIndex - 1 + images.length) % images.length
+                ? "-translate-x-full opacity-0"
+                : "translate-x-full opacity-0"
+          }`}
+        >
+          <Image src={image.src || "/placeholder.svg"} alt={image.alt} fill className="object-cover" />
+        </div>
+      ))}
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            className={`w-2 h-2 rounded-full ${index === currentImageIndex ? "bg-amber-600" : "bg-white/70"}`}
+            onClick={() => setCurrentImageIndex(index)}
+            aria-label={`View image ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function Services() {
   return (
@@ -181,8 +231,8 @@ export default function Services() {
                 </div>
               </div>
             </div>
-            <div className="relative h-[400px] w-full rounded-lg overflow-hidden order-1 md:order-2">
-              <Image src="/images/restaurant.webp" alt="Luxora Villa Restaurant" fill className="object-cover" />
+            <div className="order-1 md:order-2 overflow-hidden">
+              <AmenitiesImageSlider />
             </div>
           </div>
         </div>
@@ -292,7 +342,7 @@ export default function Services() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 md:py-24 px-4 md:px-6 bg-amber-800 text-white">
+      <section className="py-16 md:py-24 px-4 md:px-6 bg-amber-600 text-white">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Experience Luxora Villa?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
